@@ -1,0 +1,307 @@
+
+
+Main
+association LojaWebApp
+---
+---
++ static main(args: str[]): void
+---
+
+LojaWebApp
+composes ItemController
+composes EstoqueController
+composes CompraController
+composes CartaoDeCreditoController
+---
+- itemController: ItemController
+- estoqueController: EstoqueController
+- compraController: CompraController
+- cartaoDeCreditoController: CartaoDeCreditoController
+---
++ LojaWebApp()
++ getItemController(): ItemController
++ getEstoqueController(): EstoqueController
++ getCompraController(): CompraController
++ getCartaoDeCreditoController(): CartaoDeCreditoController
+---
+
+ItemController
+composes ItemRepository
+association EstoqueController
+---
+- itemRepository: ItemRepository
+- estoqueController: EstoqueController
+---
++ ItemController(estoqueController: EstoqueController)
++ cadastraJogoDeCarta(nome: str, qtdCartas: int, custoPorCarta: int): int
++ cadastraJogoDeTabuleiro(nome: str, qtdPecas: int, pesoPorPeca: int, qtdItensExtras: int): int
++ cadastraItemPersonalizado(descricao: str, peso: int, custo: int): int
++ alteraPrecoItem(id: int, novoPreco: int): void
++ alteraPesoItem(id: int, novoPeso: int): void
++ alteraNomeDescricao(id: int, novoNomeDescricao: str): void
++ exibeItem(id: int): str
+---
+
+ItemRepository
+composes Item <Interface>
+---
+- items: HashMap<int, Item>
+- idItem: int
+---
++ ItemRepository()
++ cadastraItem(item: Item): int
++ alteraPrecoItem(id: int, novoPreco: int): void
++ alteraPesoItem(id: int, novoPeso: int): void
++ alteraNomeDescricao(id: int, novoNomeDescricao: str): void
++ exibeItem(id: int): str
++ getItem(): Item
+---
+
+Item <Interface>
+---
+---
++ getId(): int
++ getCusto(): int
++ setNomeDescricao(novoNomeDescricao: str): void
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+JogoDeCarta
+implements Item <Interface>
+---
+- id: int
+- nome: str
+- qtdCartas: int
+- custoPorCarta: int
+---
++ JogoDeCarta(id: int, nome: str, qtdCartas: int, custoPorCarta: int)
++ getId(): int
++ setNomeDescricao(novoNome: str): void
++ getCusto(): int
+- getPeso(): int
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+JogoDeTabuleiro
+implements Item <Interface>
+---
+- id: int
+- nome: str
+- qtdPecas: int
+- pesoPorPeca: int
+- qtdItensExtras: int
+---
++ JogoDeTabuleiro(id: int, nome: str, qtdPecas: int, pesoPorPeca: int, qtdItensExtras: int)
++ getId(): int
++ setNomeDescricao(novoNome: str): void
++ getCusto(): int
+- getPeso(): int
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+ItemPersonalizado
+implements Item <Interface>
+---
+- id: int
+- descricao: str
+- peso: int
+- custo: int
+---
++ ItemPersonalizado(id: int, descricao: str, peso: int, custo: int)
++ getId(): int
++ setNomeDescricao(novaDescricao: str): void
++ getCusto(): int
++ setCusto(novoCusto: int): void
+- getPeso(): int
++ setPeso(novoPeso: int): void
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+EstoqueController
+composes EstoqueRepository
+---
+- estoqueRepository: EstoqueRepository
+---
++ EstoqueController()
++ adicionaItem(item: Item): void
++ consultaEstado(id: int): int
++ consultaEstoque(id: int): int
++ consultaPreVenda(id: int): int
++ adicionaEstoque(id: int, unidades: int): void
++ removeEstoque(id: int, unidades: int): void
++ getEstoque(id: int): Estoque
+---
+
+EstoqueRepository
+composes Estoque
+---
+- estoques: HashMap<int, Estoque>
+- idEstoque: int
+---
++ EstoqueRepository()
++ adicionaItem(item: Item): void
++ consultaEstado(id: int): int
++ consultaEstoque(id: int): int
++ consultaPreVenda(id: int): int
++ adicionaEstoque(id: int, unidades: int): void
++ removeEstoque(id: int, unidades: int): void
++ getEstoque(id: int): Estoque
+---
+
+Estoque
+---
+- id: int
+- item: Item
+- quantidade: int
+- estado: int
+---
++ Estoque(item: Item)
++ getId(): int
++ getQuantidade(): int
++ getEstado(): int
++ getItem(): Item
+- setEstado(novoEstado: int): void
++ adicionaEstoque(unidades: int): void
++ removeEstoque(unidades: int): void
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+CompraController
+composes CompraRepository
+association EstoqueController
+---
+- compraRepository: CompraRepository
+- estoqueController: EstoqueController
+---
++ CompraController(estoqueController: EstoqueController)
++ configuraTarifa(tarifa: double): void
++ cadastraCompra(idItems: int[], valor: int): int
++ listaCompras(): str[]
++ exibeCompra(id: int): str
+---
+
+CompraRepository
+composes Compra
+---
+- compras: HashMap<int, Compra>
+- idCompra: int
+- tarifa: double
+---
++ CompraRepository()
++ cadastraCompra(items: Item[], valorPago: int, tarifa: double): int
++ configuraTarifa(tarifa: double): void
++ listaCompras(): str[]
++ exibeCompra(id: int): str
+---
+
+Compra
+---
+- id: int
+- items: Item[]
+- valorPago: int
+- tarifa: double
+---
++ Compra(items: Item[], valorPago: int, tarifa: double)
++ getId(): int
+- calculaCustoItem(): int
+- calculaCustoTotal(): int
+- calculaImposto(): double
+- calculaTributacao(): int
+- calculaLucro(): int
++ toString(): str
+---
+
+CartaoDeCreditoController
+composes CartaoDeCreditoRepository
+---
+- cartaoDeCreditoRepository: CartaoDeCreditoRepository
+---
++ CartaoDeCreditoController()
++ cadastraCartaoBasico(): int
++ cadastraCartaoCasual(valorAnuidade: double): int
++ cadastraCartaoBeca(valorAnuidade: double): int
++ exibeCartao(id: int): str
++ simulaCompra(id: int, valor: double): double
++ efetivaCompra(id: int, valor: double): double
+---
+
+CartaoDeCreditoRepository
+composes CartaoDeCredito <Interface>
+---
+- cartoesDeCredito: hashMap<int, CartaoDeCredito>
+---
++ CartaoDeCreditoRepository()
++ cadastraCartao(cartaoDeCredito: CartaoDeCredito): int
++ exibeCartao(id: int): str
++ simulaCompra(id: int, valor: double): double
++ efetivaCompra(id: int, valor: double): double
+---
+
+CartaoDeCredito <Interface>
+---
+---
++ getId(): int
++ simulaCompra(valorCompra: double): double
++ efetivaCompra(valorCompra: double): double
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+CartaoBasico
+implements CartaoDeCredito <Interface>
+---
+- id: int
+---
++ CartaoBasico(id: int)
++ getId(): int
++ simulaCompra(valorCompra: double): double
++ efetivaCompra(valorCompra: double): double
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+CartaoCasual
+implements CartaoDeCredito <Interface>
+---
+- id: int
+- anuidade: double
+- pontos: int
+---
++ CartaoCasual(id: int, valorAnuidade: double)
++ getId(): int
++ simulaCompra(valorCompra: double): double
++ efetivaCompra(valorCompra: double): double
++ getPontos(): int
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+CartaoBeca
+implements CartaoDeCredito <Interface>
+---
+- id: int
+- anuidade: double
+- cashback: double
+- valorComprasRealizadas: double
+---
++ CartaoBeca(id: int, valorAnuidade: double)
++ getId(): int
++ simulaCompra(valorCompra: double): double
++ efetivaCompra(valorCompra: double): double
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+

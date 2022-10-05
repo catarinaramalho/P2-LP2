@@ -1,0 +1,215 @@
+
+
+Main
+association FaBor
+---
+---
++ static main(args: str[]): void
+---
+
+FaBor
+composes BordadoController, LinhaProducaoController, RoboController
+---
+- bordadoController: BordadoController
+- RoboController: RoboController
+- linhaProducaoController: LinhaProducaoController
+---
++ FaBor()
++ cadastraBordado(altura: int, largura: int): int
++ listaBordado(idBordado: int): str
++ cadastraRoboLimpador(idRobo: str): str
++ cadastraRoboBorda(idRobo: str): str
++ cadastraRoboRetangulo(x1: int, y1: int, x2: int, y2: int, idRobo: str): str
++ cadastraRoboPonto(x: int, y: int, idRobo: str): str
++ cadastraProd(idRobo: str, posicao: int): void
++ processa(idBordado: int): double
++ pegaPeso(): int
++ apagaRobo(idRobo: str): void
++ contaProcessamentos(idBordado: int): int
++ estadoBordado(idBordado: int, estado: int): str
+---
+
+BordadoController
+composes BordadoService
+---
+- bordadoService: BordadoService
+---
++ BordadoController(bordadoService: BordadoService)
++ cadastraBordado(altura: int, largura: int): int
++ listaBordado(idBordado: int): str
++ contaProcessamentos(idBordado: int): int
++ estadoBordado(idBordado: int, estado: int): str
+---
+
+BordadoService
+composes BordadoRepository
+---
+- bordadoRepository: BordadoRepository
+---
++ BordadoService()
++ cadastraBordado(altura: int, largura: int): int
++ listaBordado(idBordado: int): str
++ contaProcessamentos(idBordado: int): int
++ estadoBordado(idBordado: int, estado: int): str
++ recuperaBordado(idBordado: int): Bordado
+---
+
+BordadoRepository
+composes Bordado
+---
+- bordados: HashMap<Integer, Bordado>
+---
++ BordadoRepository()
++ cadastraBordado(altura: int, largura: int): int
++ recuperaBordado(idBordado: int): Bordado
+---
+
+Bordado
+---
+- id: int
+- pontos: str[][]
+- historico: ArrayList<str>
+---
++ Bordado(id: int, pontos: str[][])
++ getId(): int
++ adicionaEstado(estado: str): void
++ contaProcessamentos(): int
++ estadoBordado(estado: int): str
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+RoboController
+composes RoboService
+---
+- roboService: RoboService
+---
++ RoboController(roboService: RoboService)
++ cadastraRoboLimpador(idRobo: str): str
++ cadastraRoboBorda(idRobo: str): str
++ cadastraRoboRetangulo(x1: int, y1: int, x2: int, y2: int, idRobo: str): str
++ cadastraRoboPonto(x: int, y: int, idRobo: str): str
++ apagaRobo(idRobo: str): void
+---
+
+RoboService
+composes RoboRepository
+---
+- roboRepository: RoboRepository
+---
++ RoboService()
++ cadastraRoboLimpador(idRobo: str): str
++ cadastraRoboBorda(idRobo: str): str
++ cadastraRoboRetangulo(x1: int, y1: int, x2: int, y2: int, idRobo: str): str
++ cadastraRoboPonto(x: int, y: int, idRobo: str): str
++ cadastraProd(idRobo: str, posicao: int): void
++ apagaRobo(idRobo: str): void
++ recuperaRobo(idRobo: str): RoboInterface
+---
+
+RoboRepository
+composes RoboInterface <Interface>
+---
+- robos: HashMap<str, RoboInterface>
+---
++ RoboRepository()
++ cadastraRobo(robo: RoboInterface): str
++ apagaRobo(idRobo: str): void
++ recuperaRobo(idRobo: str): RoboInterface
+---
+
+RoboInterface <Interface>
+---
+---
++ getId(): str
++ getPeso(): int
++ processa(bordado: Bordado): double
++ toString(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+RoboAbstract <Abstract>
+implements RoboInterface <Interface>
+---
+- id: str
+---
++ RoboAbstract(id: str)
++ getId(): str
++ hashCode(): int
++ equals(obj: Object): boolean
+---
+
+RoboLimpador
+extends RoboAbstract <Abstract>
+---
+---
++ RoboLimpador(id: str)
++ getPeso(): int
+- getCustoPorPonto(): double
++ processa(bordado: Bordado): double
++ toString(): str
+---
+
+RoboBorda
+extends RoboAbstract <Abstract>
+---
+---
++ RoboBorda(id: str)
++ getPeso(): int
+- getCustoPorPonto(): double
++ processa(bordado: Bordado): double
++ toString(): str
+---
+
+RoboRetangulo
+extends RoboAbstract <Abstract>
+---
+- coordenadasRetangulo: int[][]
+---
++ RoboRetangulo(coordenadasRetangulo: int[][], id: str)
++ getPeso(): int
+- getCustoPorPonto(): double
++ processa(bordado: Bordado): double
++ toString(): str
+---
+
+RoboPonto
+extends RoboAbstract <Abstract>
+---
+- coordenadasPonto: int[]
+---
++ RoboPonto(coordenadasPonto: int[], id: str)
++ getPeso(): int
+- getCustoPorPonto(): double
++ processa(bordado: Bordado): double
++ toString(): str
+---
+
+LinhaProducaoController
+composes LinhaProducaoService
+---
+- linhaProducaoService: LinhaProducaoService
+---
++ LinhaProducaoController(linhaProducaoService: LinhaProducaoService)
++ cadastraProd(idRobo: str, posicao: int): void
++ processa(idBordado: int): double
++ pegaPeso(): int
++ apagaRobo(idRobo: str): void
+---
+
+LinhaProducaoService
+association BordadoService, RoboService
+---
+- linhaProducao: RoboInterface[]
+- bordadoService: BordadoService
+- roboService: RoboService
+---
++ LinhaProducaoService(bordadoService: BordadoService, roboService: RoboService)
++ cadastraProd(idRobo: str, posicao: int): void
++ processa(idBordado: int): double
++ pegaPeso(): int
++ apagaRobo(idRobo: str): void
+---
+

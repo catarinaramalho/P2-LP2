@@ -1,0 +1,48 @@
+
+
+Main
+association BEP
+---
+---
++ static main(args: str[]): void
+---
+
+BEP
+composes Bordado
+composes Coletanea
+---
+- bordados: Bordado[]
+- coletaneas: Coletanea[]
+---
++ BEP()
++ cadastraBordado(numeroBordado: int, numeroLinhas: int, numeroColunas: int): void
++ atualizaBordado(numeroBordado: int, no: str, linha: int, coluna: int): void
++ imprimeBordado(numeroBordado: int): str
++ listaBordados(): str[]
++ alteraTamanhoBordado(numeroBordado: int, numeroLinhas: int, numeroColunas: int): void
++ cadastraColetanea(numeroColetanea: int, quantidadeBordados: int, numerosBordados: int[]): void
++ imprimeColetanea(numeroColetanea: int): str
+---
+
+Bordado
+---
+- pontos: str[][]
+---
++ Bordado(numeroLinhas: int, numeroColunas: int)
++ atualizaBordado(no: str, linha: int, coluna: int): void
++ alteraTamanhoBordado(numeroLinhas: int, numeroColunas: int): void
++ contaPontos(): int
++ visaoResumida(): str
++ toString(): str
+---
+
+Coletanea
+composes Bordado
+---
+- bordados: Bordado[]
+---
++ Coletanea(bordados: Bordado[])
+- somaPontosBordados(): int
++ toString(): str
+---
+
